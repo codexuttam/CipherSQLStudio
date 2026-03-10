@@ -1,0 +1,22 @@
+[
+    {
+        "_id": "1",
+        "title": "List all employees",
+        "difficulty": "Easy",
+        "description": "Return all employee rows",
+        "question": "Select every column from the employees table",
+        "tables": [
+            "employees"
+        ]
+    },
+    {
+        "_id": "2",
+        "title": "Employees with high salary",
+        "difficulty": "Easy",
+        "description": "Return employees with salary > 70000",
+        "question": "Find employees earning more than 70000",
+        "tables": [
+            "employees"
+        ]
+    }
+]

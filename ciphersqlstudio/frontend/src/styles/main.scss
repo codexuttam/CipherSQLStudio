@@ -1,0 +1,60 @@
+@import 'variables';
+@import 'mixins';
+@import 'layout';
+
+body {
+    font-family: system-ui, Arial, sans-serif;
+    color: $text;
+}
+
+.assignment-card {
+    border: 1px solid #e6e6e6;
+    padding: 1rem;
+    border-radius: 6px;
+}
+
+.btn {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    background: #f1f5f9;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+}
+
+.btn.primary {
+    background: $primary;
+    color: white;
+}
+
+.panel {
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border: 1px solid #eaeaea;
+    border-radius: 6px;
+}
+
+.sql-editor {
+    margin-bottom: 0.75rem;
+}
+
+.results-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.results-table th,
+.results-table td {
+    border: 1px solid #ddd;
+    padding: 0.5rem;
+    text-align: left;
+}
+
+.hint-box {
+    margin-top: 0.5rem;
+    background: #fff7ed;
+    padding: 0.75rem;
+    border-radius: 4px;
+}

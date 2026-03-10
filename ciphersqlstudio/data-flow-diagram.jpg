@@ -1,0 +1,1 @@
+PLACEHOLDER: Please replace this file with a photo (JPEG) of your hand-drawn data flow diagram described in the project brief. The flow should show: User -> React UI -> POST /execute-query -> Express Server -> SQL Validator -> PostgreSQL -> Results -> React Render.
