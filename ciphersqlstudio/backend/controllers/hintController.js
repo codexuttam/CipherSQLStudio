@@ -1,7 +1,11 @@
 const fetch = require('node-fetch');
 
 const buildPrompt = ({ question, query }) => {
-    return `You are a SQL tutor. A student is solving this SQL problem.\n\nQuestion:\n${question}\n\nStudent Query:\n${query}\n\nProvide a helpful hint that guides them in the right direction WITHOUT giving the final SQL query.`;
+    return `You are an expert SQL tutor. A student is solving this SQL problem.
+Question: ${question}
+Student Query: ${query}
+
+Provide exactly ONE direct, extremely helpful hint about what SQL command or logic they are missing or getting wrong. DO NOT say "That's a great start" or provide any conversational filler. DO NOT give them the final SQL query. Get straight to the technical hint.`;
 };
 
 exports.getHint = async (req, res) => {
