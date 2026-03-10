@@ -4,6 +4,7 @@ import { fetchAssignment, executeQuery, getHint } from '../services/api';
 import SQLeditor from '../components/SQLeditor';
 import ResultsTable from '../components/ResultsTable';
 import SampleDataViewer from '../components/SampleDataViewer';
+import Flashcard from '../components/Flashcard';
 
 export default function AssignmentAttempt() {
     const { id } = useParams();
@@ -16,19 +17,28 @@ export default function AssignmentAttempt() {
         fetchAssignment(id).then(setAssignment).catch(console.error);
     }, [id]);
 
+    const [queryError, setQueryError] = useState(null);
+
     const run = async () => {
         try {
-            const r = await executeQuery(query);
+            setQueryError(null);
+            const r = await executeQuery(query, id);
             setResult(r);
         } catch (err) {
             setResult({ rows: [], fields: [] });
+            setQueryError(err.response?.data?.error || err.message || 'An error occurred during execution');
             console.error(err);
         }
     };
 
     const askHint = async () => {
-        const h = await getHint(assignment?.question || '', query);
-        setHint(h.hint || 'No hint');
+        try {
+            setHint('Loading hint...');
+            const h = await getHint(assignment?.question || '', query);
+            setHint(h.hint || 'No hint');
+        } catch (err) {
+            setHint('Error getting hint: ' + (err.response?.data?.error || err.message));
+        }
     };
 
     return (
@@ -54,9 +64,16 @@ export default function AssignmentAttempt() {
                         {hint && <div className="hint-box"><strong>Hint:</strong> {hint}</div>}
                     </section>
 
+                    <section className="panel study-panel">
+                        <h3>Study Flashcard</h3>
+                        <p className="muted small">Click the card to flip and reveal the hint/answer.</p>
+                        <Flashcard front={assignment.question || assignment.title} back={assignment.description || 'No back content'} />
+                    </section>
+
                     <section className="panel results-panel">
                         <h3>Results</h3>
-                        <ResultsTable fields={result.fields || []} rows={result.rows || []} />
+                        {queryError && <div className="error-box" style={{ color: '#ef4444', marginBottom: '1rem', padding: '1rem', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: '8px' }}><strong>Error:</strong> {queryError}</div>}
+                        {!queryError && <ResultsTable fields={result.fields || []} rows={result.rows || []} />}
                     </section>
                 </>
             )}

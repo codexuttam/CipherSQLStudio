@@ -6,28 +6,44 @@ const buildPrompt = ({ question, query }) => {
 
 exports.getHint = async (req, res) => {
     const { question, query } = req.body || {};
-    const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
-    if (!OPENAI_API_KEY) return res.status(500).json({ error: 'OpenAI API key not configured' });
+    // Only check for Google API key since that's what the user wants to use
+    const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY;
+
+    if (!GOOGLE_API_KEY) {
+        return res.status(500).json({ error: 'No GOOGLE_API_KEY configured in environment variables.' });
+    }
 
     const prompt = buildPrompt({ question, query });
 
     try {
-        const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        // Use Google Generative Language API for Gemini
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GOOGLE_API_KEY}`;
+        const resp = await fetch(url, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${OPENAI_API_KEY}`,
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                model: 'gpt-4o-mini',
-                messages: [{ role: 'user', content: prompt }],
-                max_tokens: 200,
-                temperature: 0.7,
+                contents: [{ parts: [{ text: prompt }] }],
+                generationConfig: {
+                    temperature: 0.7,
+                    maxOutputTokens: 200,
+                }
             }),
         });
-        const data = await response.json();
-        const hint = data?.choices?.[0]?.message?.content || 'No hint generated.';
-        res.json({ hint });
+
+        const textResponse = await resp.text();
+        let data;
+        try {
+            data = JSON.parse(textResponse);
+        } catch (e) {
+            return res.status(500).json({ error: 'Failed to parse LLM response', details: textResponse });
+        }
+
+        if (!resp.ok) {
+            return res.status(resp.status).json({ error: data?.error?.message || 'LLM API error' });
+        }
+
+        const hint = data?.candidates?.[0]?.content?.parts?.[0]?.text || 'No hint generated.';
+        return res.json({ hint });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

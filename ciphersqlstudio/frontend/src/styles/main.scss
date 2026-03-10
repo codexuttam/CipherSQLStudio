@@ -2,59 +2,377 @@
 @import 'mixins';
 @import 'layout';
 
+/* Import a modern font */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
 body {
-    font-family: system-ui, Arial, sans-serif;
-    color: $text;
+    font-family: 'Outfit', system-ui, Arial, sans-serif;
+    color: $text-primary;
+    background: radial-gradient(circle at top right, $bg-gradient-start, $bg-color 60%, $bg-gradient-end);
+    background-attachment: fixed;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.6;
 }
 
-.assignment-card {
-    border: 1px solid #e6e6e6;
-    padding: 1rem;
-    border-radius: 6px;
-}
-
-.btn {
-    display: inline-block;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    background: #f1f5f9;
-    border: none;
-    cursor: pointer;
-    text-decoration: none;
-    color: inherit;
-}
-
-.btn.primary {
-    background: $primary;
-    color: white;
-}
-
-.panel {
-    margin-bottom: 1rem;
-    padding: 1rem;
-    border: 1px solid #eaeaea;
-    border-radius: 6px;
-}
-
-.sql-editor {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: $text-primary;
+    font-weight: 700;
+    letter-spacing: -0.02em;
     margin-bottom: 0.75rem;
 }
 
-.results-table table {
-    width: 100%;
-    border-collapse: collapse;
+/* Base Headings & Brand */
+.app-header {
+    h1 a {
+        text-decoration: none;
+        @include text-gradient($secondary, $primary);
+        font-weight: 800;
+        font-size: 2.2rem;
+        transition: opacity 0.3s ease;
+
+        &:hover {
+            opacity: 0.9;
+        }
+    }
 }
 
-.results-table th,
-.results-table td {
-    border: 1px solid #ddd;
-    padding: 0.5rem;
-    text-align: left;
+a {
+    color: $primary;
+    text-decoration: none;
+    transition: color 0.3s ease;
+
+    &:hover {
+        color: lighten($primary, 15%);
+    }
 }
 
-.hint-box {
+/* Card Grid Styles */
+.assignment-card {
+    border-radius: 16px;
+    overflow: hidden;
+    transform-style: preserve-3d;
+    transition: all 0.45s cubic-bezier(.2, .9, .2, 1);
+    background: transparent;
+}
+
+.card-3d {
+    perspective: 1500px;
+    cursor: pointer;
+    position: relative;
+    min-height: 200px;
+}
+
+.card-3d .card-face {
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    transition: transform 0.6s cubic-bezier(.2, .8, .2, 1.2), opacity 0.3s;
+    position: absolute;
+    inset: 0;
+    padding: 1.75rem;
+    border-radius: 16px;
+    @include glassmorphism;
+}
+
+.card-3d .card-front {
+    transform: rotateY(0deg) translateZ(0);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+
+    h3 {
+        font-size: 1.4rem;
+        margin-bottom: 0.5rem;
+    }
+}
+
+.card-3d:hover {
+    transform: translateY(-8px) scale(1.02);
+
+    .card-front {
+        transform: rotateY(-180deg);
+        background: rgba(30, 41, 59, 0.8);
+        border-color: rgba(139, 92, 246, 0.4);
+        box-shadow: 0 0 20px $primary-glow;
+    }
+
+    .card-back {
+        transform: rotateY(0deg);
+    }
+}
+
+.card-3d .card-back {
+    transform: rotateY(180deg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.9));
+    border-color: rgba(139, 92, 246, 0.5);
+
+    p {
+        margin-bottom: 1.25rem;
+        text-align: center;
+    }
+}
+
+.muted {
+    color: $text-muted;
+}
+
+.desc {
     margin-top: 0.5rem;
-    background: #fff7ed;
-    padding: 0.75rem;
-    border-radius: 4px;
+    color: $text-secondary;
+}
+
+/* Buttons */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.6rem 1.25rem;
+    border-radius: 10px;
+    background: rgba(100, 116, 139, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    text-decoration: none;
+    color: $text-primary;
+    font-weight: 500;
+    transition: all 0.3s ease;
+
+    &:hover {
+        background: rgba(100, 116, 139, 0.3);
+        transform: translateY(-2px);
+    }
+
+    &:active {
+        transform: translateY(0);
+    }
+}
+
+.btn.primary {
+    background: linear-gradient(135deg, $primary, $secondary);
+    color: white;
+    border: none;
+    box-shadow: 0 4px 15px $primary-glow;
+    font-weight: 600;
+
+    &:hover {
+        box-shadow: 0 6px 20px $primary-glow;
+        background: linear-gradient(135deg, lighten($primary, 5%), lighten($secondary, 5%));
+    }
+}
+
+/* Panels */
+.panel {
+    margin-bottom: 1.5rem;
+    padding: 1.5rem;
+    border-radius: 16px;
+    @include glassmorphism;
+
+    h2 {
+        @include text-gradient($secondary, $primary);
+    }
+
+    h3 {
+        color: $text-primary;
+    }
+}
+
+.actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.sql-editor {
+    margin-bottom: 1rem;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid $surface-border;
+}
+
+/* Tables */
+.results-table {
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid $surface-border;
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background: rgba(15, 23, 42, 0.4);
+    }
+
+    th {
+        background: rgba(30, 41, 59, 0.8);
+        color: $text-primary;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 0.05em;
+    }
+
+    th,
+    td {
+        border-bottom: 1px solid $surface-border;
+        padding: 0.85rem 1rem;
+        text-align: left;
+    }
+
+    tr:last-child td {
+        border-bottom: none;
+    }
+
+    tr:hover td {
+        background: rgba(255, 255, 255, 0.03);
+    }
+
+    td {
+        color: $text-secondary;
+    }
+}
+
+/* Hint Box */
+.hint-box {
+    margin-top: 1rem;
+    background: rgba(139, 92, 246, 0.1);
+    padding: 1rem;
+    border-radius: 12px;
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    color: lighten($primary, 20%);
+    animation: fadeIn 0.4s ease;
+
+    strong {
+        color: $primary;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Flashcard styles */
+.flashcard {
+    width: 100%;
+    max-width: 400px;
+    height: 200px;
+    perspective: 1500px;
+    margin-top: 1rem;
+    cursor: pointer;
+}
+
+.flashcard .flashcard-face {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 1.5rem;
+    transition: transform 0.6s cubic-bezier(.2, .8, .2, 1.2), opacity 0.3s ease;
+    @include glassmorphism;
+}
+
+.flashcard .flashcard-front {
+    transform: rotateY(0deg);
+    background: rgba(30, 41, 59, 0.8);
+    border: 1px solid rgba(139, 92, 246, 0.3);
+}
+
+.flashcard .flashcard-back {
+    transform: rotateY(180deg);
+    background: linear-gradient(135deg, rgba(88, 28, 135, 0.6), rgba(30, 58, 138, 0.6));
+    border: 1px solid rgba(139, 92, 246, 0.5);
+    color: white;
+}
+
+.flashcard.flipped .flashcard-front {
+    transform: rotateY(-180deg);
+    opacity: 0;
+}
+
+.flashcard.flipped .flashcard-back {
+    transform: rotateY(0deg);
+    opacity: 1;
+}
+
+.flashcard-content {
+    font-weight: 500;
+    font-size: 1.1rem;
+    line-height: 1.5;
+}
+
+/* Responsive tweaks */
+@media (max-width: 641px) {
+    .app-header h1 a {
+        font-size: 1.8rem;
+    }
+
+    .panel {
+        padding: 1rem;
+    }
+
+    .flashcard {
+        height: 180px;
+    }
+
+    .actions {
+        flex-direction: column;
+
+        button {
+            width: 100%;
+        }
+    }
+}
+
+/* Sample Data Styles */
+.sample-data {
+    h4 {
+        margin-bottom: 1rem;
+        color: $text-primary;
+    }
+}
+
+.sample-table {
+    background: rgba(30, 41, 59, 0.4);
+    border: 1px dashed rgba(139, 92, 246, 0.3);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+
+    strong {
+        color: $secondary;
+        display: block;
+        margin-bottom: 0.25rem;
+        font-size: 1.1rem;
+    }
+
+    .sample-placeholder {
+        color: $text-muted;
+        font-size: 0.9rem;
+    }
 }

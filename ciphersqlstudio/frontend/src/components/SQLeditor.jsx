@@ -7,6 +7,7 @@ export default function SQLeditor({ value, onChange }) {
             <Editor
                 height="300px"
                 defaultLanguage="sql"
+                theme="vs-dark"
                 value={value}
                 onChange={onChange}
                 options={{ minimap: { enabled: false } }}

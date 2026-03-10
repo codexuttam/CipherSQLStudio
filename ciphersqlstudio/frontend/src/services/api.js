@@ -12,8 +12,8 @@ export async function fetchAssignment(id) {
     return res.data;
 }
 
-export async function executeQuery(query) {
-    const res = await axios.post(`${API_BASE}/execute-query`, { query });
+export async function executeQuery(query, assignmentId) {
+    const res = await axios.post(`${API_BASE}/execute-query`, { query, assignmentId });
     return res.data;
 }
 
