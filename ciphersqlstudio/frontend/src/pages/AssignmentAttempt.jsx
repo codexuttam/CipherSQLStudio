@@ -9,7 +9,7 @@ import Flashcard from '../components/Flashcard';
 export default function AssignmentAttempt() {
     const { id } = useParams();
     const [assignment, setAssignment] = useState(null);
-    const [query, setQuery] = useState('SELECT * FROM employees;');
+    const [query, setQuery] = useState('-- Write your SQL query here\n');
     const [result, setResult] = useState({ rows: [], fields: [] });
     const [hint, setHint] = useState('');
 
@@ -52,7 +52,7 @@ export default function AssignmentAttempt() {
                     </section>
 
                     <section className="panel sample-panel">
-                        <SampleDataViewer tables={assignment.tables} />
+                        <SampleDataViewer tables={assignment.sampleTables || assignment.tables} />
                     </section>
 
                     <section className="panel editor-panel">
@@ -61,13 +61,12 @@ export default function AssignmentAttempt() {
                             <button className="btn primary" onClick={run}>Run Query</button>
                             <button className="btn" onClick={askHint}>Get Hint</button>
                         </div>
-                        {hint && <div className="hint-box"><strong>Hint:</strong> {hint}</div>}
                     </section>
 
                     <section className="panel study-panel">
                         <h3>Study Flashcard</h3>
-                        <p className="muted small">Click the card to flip and reveal the hint/answer.</p>
-                        <Flashcard front={assignment.question || assignment.title} back={assignment.description || 'No back content'} />
+                        <p className="muted small">Click the card to flip and reveal the hint.</p>
+                        <Flashcard front={assignment.question || assignment.title} back={hint || 'Click "Get Hint" above, then flip this card to see your AI assistance!'} />
                     </section>
 
                     <section className="panel results-panel">
